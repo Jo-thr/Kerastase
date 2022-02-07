@@ -1,0 +1,1774 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- font-face CSS -->
+    <link href="styles/fonts.css" rel="stylesheet" />
+
+    <!-- tailwind generated CSS -->
+    <link href="styles/tailwind.css" rel="stylesheet" />
+
+    <!-- aos animation lib css -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <!-- swiper lib css (used in carousel, diagnosis and routines) -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://unpkg.com/swiper/swiper-bundle.min.css"
+    />
+
+    <!-- diagnosis custom css -->
+    <link href="styles/diagnosis.css" rel="stylesheet" />
+
+    <!-- global custom css -->
+    <link href="styles/main.css" rel="stylesheet" />
+
+    <!-- import before/after component lib -->
+    <script
+      type="module"
+      src="https://unpkg.com/img-comparison-slider@3/dist/component/component.esm.js"
+    ></script>
+    <script
+      nomodule=""
+      src="https://unpkg.com/img-comparison-slider@3/dist/component/component.js"
+    ></script>
+
+    <title>Consumer</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"
+    />
+  </head>
+
+  <body>
+    <div id="app" class="bg-lighterGray">
+      <div
+        class="main-container relative mx-auto bg-white text-center"
+        v-bind:class="{ 'h-screen overflow-hidden': answerSelected !== 0 || !overlayHidden }"
+      >
+        <!-- Diagnosis Pop-in -->
+
+        <overlay-component v-if="!overlayHidden">
+          <component class="mt-12" v-bind:is="currentStepComponent">
+            <template v-slot:answers-1>
+              <p class="font-PlayfairDisplay text-gray mb-10">
+                What is your main hair goal ?
+              </p>
+              <!-- 1er choix -->
+              <div
+                class="flex flex-col items-center cursor-pointer mb-12"
+                v-on:click="hideOverlay()"
+              >
+                <img
+                  class="w-7/12 mb-2"
+                  v-bind:src="answersOne[0].img"
+                  v-on:click.native="answersSelect1()"
+                />
+                <button-tertiary-component
+                  class="-m-6 w-max px-6"
+                  v-on:click.native="answersSelect1()"
+                >
+                  {{ answersOne[0].title }}
+                </button-tertiary-component>
+              </div>
+              <!-- 2e choix-->
+              <div
+                class="flex flex-col items-center cursor-pointer mb-12"
+                v-on:click="hideOverlay()"
+              >
+                <img
+                  class="w-7/12 mb-2"
+                  v-bind:src="answersOne[1].img"
+                  v-on:click.native="answersSelect2()"
+                />
+                <button-tertiary-component
+                  class="-m-6 w-max px-6"
+                  v-on:click.native="answersSelect2()"
+                >
+                  {{ answersOne[1].title }}
+                </button-tertiary-component>
+              </div>
+              <!-- 3e choix -->
+              <div
+                class="flex flex-col items-center cursor-pointer mb-12"
+                v-on:click="hideOverlay()"
+              >
+                <img
+                  class="w-7/12 mb-2"
+                  v-bind:src="answersOne[2].img"
+                  v-on:click.native="answersSelect3()"
+                />
+                <button-tertiary-component
+                  class="-m-6 w-max px-6"
+                  v-on:click.native="answersSelect3()"
+                >
+                  {{ answersOne[2].title }}
+                </button-tertiary-component>
+              </div>
+            </template>
+          </component>
+
+          <close-button-component v-on:click.native="resetOverlay()" />
+        </overlay-component>
+
+        <!-- Routines after diagnosis done -->
+
+        <div v-if="answerSelected !== 0">
+          <div
+            class="slider bg-white overflow-hidden h-screen"
+            v-if="answerSelected == 1"
+          >
+            <div
+              class="
+                swiper-container
+                flex flex-col
+                justify-start
+                bg-white
+                w-full
+              "
+            >
+              <div class="swiper-wrapper">
+                <slot>
+                  <div
+                    v-for="slide in slideOne"
+                    v-bind:key="slide.id"
+                    class="
+                      swiper-slide
+                      flex flex-col
+                      items-center
+                      justify-center
+                      text-gray
+                    "
+                  >
+                    <p
+                      class="
+                        flex
+                        items-center
+                        justify-center
+                        font-PlayfairDisplay
+                        text-gray
+                        mt-8
+                        mb-6
+                      "
+                    >
+                      {{slide.titleTop}}
+                    </p>
+                    <img class="w-full mb-4 p-2" v-bind:src="slide.img" />
+                    <p
+                      class="
+                        mx-10
+                        mb-4
+                        px-2
+                        font-PlayfairDisplay
+                        text-3xl
+                        uppercase
+                        text-center
+                      "
+                      v-if="slide.title"
+                    >
+                      {{slide.title}}
+                    </p>
+                    <p
+                      class="mx-10 font-PlayfairDisplay text-black text-center"
+                    >
+                      {{slide.subtitle}}
+                    </p>
+                    <link-component
+                      v-bind:href="slide.link"
+                      target="_blank"
+                      :visible="slide.link"
+                      ><slot>where to buy this product</slot>
+                    </link-component>
+                  </div>
+                </slot>
+              </div>
+              <div class="swiper-pagination"></div>
+              <div class="swiper-button-prev"></div>
+              <div class="swiper-button-next"></div>
+            </div>
+            <close-button-component
+              v-on:click.native="resetSlider()"
+              class="z-50"
+            />
+          </div>
+
+          <div
+            class="slider bg-white overflow-hidden h-screen"
+            v-if="answerSelected == 2"
+          >
+            <div
+              class="
+                swiper-container
+                flex flex-col
+                justify-start
+                bg-white
+                w-full
+              "
+            >
+              <div class="swiper-wrapper">
+                <slot>
+                  <div
+                    v-for="slide in slideTwo"
+                    v-bind:key="slide.id"
+                    class="
+                      swiper-slide
+                      flex flex-col
+                      items-center
+                      justify-center
+                      text-gray
+                    "
+                  >
+                    <p
+                      class="
+                        flex
+                        items-center
+                        justify-center
+                        font-PlayfairDisplay
+                        text-gray
+                        mt-8
+                        mb-6
+                      "
+                    >
+                      {{slide.titleTop}}
+                    </p>
+                    <img class="w-full mb-4 p-2" v-bind:src="slide.img" />
+                    <p
+                      class="
+                        mx-10
+                        mb-4
+                        px-2
+                        font-PlayfairDisplay
+                        text-3xl
+                        uppercase
+                        text-center
+                      "
+                      v-if="slide.title"
+                    >
+                      {{slide.title}}
+                    </p>
+                    <p
+                      class="mx-10 font-PlayfairDisplay text-black text-center"
+                    >
+                      {{slide.subtitle}}
+                    </p>
+                    <link-component
+                      v-bind:href="slide.link"
+                      target="_blank"
+                      :visible="slide.link"
+                      ><slot>where to buy this product</slot>
+                    </link-component>
+                  </div>
+                </slot>
+              </div>
+              <div class="swiper-pagination"></div>
+              <div class="swiper-button-prev"></div>
+              <div class="swiper-button-next"></div>
+            </div>
+            <close-button-component
+              v-on:click.native="resetSlider()"
+              class="z-50"
+            />
+          </div>
+
+          <div
+            class="slider bg-white overflow-hidden h-screen"
+            v-if="answerSelected == 3"
+          >
+            <div
+              class="
+                swiper-container
+                flex flex-col
+                justify-start
+                bg-white
+                w-full
+              "
+            >
+              <div class="swiper-wrapper">
+                <slot>
+                  <div
+                    v-for="slide in slideThree"
+                    v-bind:key="slide.id"
+                    class="
+                      swiper-slide
+                      flex flex-col
+                      items-center
+                      justify-center
+                      text-gray
+                    "
+                  >
+                    <p
+                      class="
+                        flex
+                        items-center
+                        justify-center
+                        font-PlayfairDisplay
+                        text-gray
+                        mt-8
+                        mb-6
+                      "
+                    >
+                      {{slide.titleTop}}
+                    </p>
+                    <img class="w-full mb-4 p-2" v-bind:src="slide.img" />
+                    <p
+                      class="
+                        mx-10
+                        mb-4
+                        px-2
+                        font-PlayfairDisplay
+                        text-3xl
+                        uppercase
+                        text-center
+                      "
+                      v-if="slide.title"
+                    >
+                      {{slide.title}}
+                    </p>
+                    <p
+                      class="mx-10 font-PlayfairDisplay text-black text-center"
+                    >
+                      {{slide.subtitle}}
+                    </p>
+                    <link-component
+                      v-bind:href="slide.link"
+                      target="_blank"
+                      :visible="slide.link"
+                      ><slot>where to buy this product</slot>
+                    </link-component>
+                  </div>
+                </slot>
+              </div>
+              <div class="swiper-pagination"></div>
+              <div class="swiper-button-prev"></div>
+              <div class="swiper-button-next"></div>
+            </div>
+            <close-button-component
+              v-on:click.native="resetSlider()"
+              class="z-50"
+            />
+          </div>
+        </div>
+
+        <header-component></header-component>
+
+        <!-- Navigation (with scrollactive library) -->
+
+        <scrollactive
+          class="
+            sticky
+            top-0
+            flex-gap
+            m-0
+            py-4
+            inline-flex
+            content-center
+            flex-nowrap
+            overflow-x-scroll
+            bg-white
+            font-AvenirLTStd
+            text-sm
+            shadow-sm
+            z-30
+          "
+          active-class="active-link"
+        >
+          <a href="#product" class="scrollactive-item">Product</a>
+          <a href="#diagnosis" class="scrollactive-item">Diagnosis</a>
+          <a href="#pro-tips" class="scrollactive-item">Pro&nbsp;tips</a>
+          <a href="#howTo" class="scrollactive-item">How&nbsp;to&nbsp;apply</a>
+          <a href="#beforeAfter" class="scrollactive-item"
+            >Before&nbsp;/&nbsp;After</a
+          >
+          <a href="#colorDamage" class="scrollactive-item">Color&nbsp;damage</a>
+          <a href="#whatsInside" class="scrollactive-item"
+            >What's&nbsp;inside</a
+          >
+          <a href="#howItsMade" class="scrollactive-item">Sustainability</a>
+          <a href="#theRange" class="scrollactive-item">The&nbsp;range</a>
+          <a href="#onlyInSalon" class="scrollactive-item"
+            >Only&nbsp;in&nbsp;salon</a
+          >
+        </scrollactive>
+
+        <!-- Product section -->
+
+        <section id="product" class="pt-8">
+          <h4 class="font-DinCondensed text-base text-grey">CHROMA ABSOLU</h4>
+
+          <h2
+            class="
+              font-PlayfairDisplay
+              text-5xl
+              leading-snug
+              text-grey
+              underline
+            "
+          >
+            Bain Riche Chroma Respect
+          </h2>
+          <p class="font-PlayfairDisplay text-3xl text-grey mt-2 mb-4">
+            Color Protecting
+            <span style="font-family: font-AvenirLTStd">&</span> Nourishing
+            Shampoo
+          </p>
+
+          <div class="flex flex-row overflow-x-scroll w-full mb-4">
+            <img
+              src="assets/img/chroma/bain-riche-charlotte.jpg"
+              alt=""
+              class="w-full mr-2"
+              data-aos="zoom-in"
+            />
+            <img
+              src="assets/img/chroma/bain-riche-main.jpg"
+              alt=""
+              class="w-full mr-2"
+              data-aos="zoom-in"
+            />
+            <img
+              src="assets/img/chroma/bain-riche.jpg"
+              alt=""
+              class="w-full"
+              data-aos="zoom-in"
+            />
+          </div>
+
+          <p class="font-PlayfairDisplay text-3xl text-grey mt-2 mb-2 px-2">
+            Free of Silicone, Sulfates and Paraben
+          </p>
+          <p class="font-PlayfairDisplay text-lg text-grey mb-4">
+            Lactic Acid + Centella Asiatica
+          </p>
+
+          <ul
+            class="
+              bg-lighterGray
+              p-4
+              pl-8
+              font-AvenirLTStd
+              text-left text-base
+              list-disc
+            "
+            data-aos="fade-up"
+          >
+            <p class="block -ml-3 mb-2"><b>Main benefits</b></p>
+            <li class="mb-2">
+              Protects Hair color from stripping or fading away
+            </li>
+            <li class="mb-2">
+              Transforms fiber surface for immediate softness and less color
+              induced frizz
+            </li>
+            <li class="mb-2">95% more nourishment*</li>
+            <li class="mb-2">65% more brilliant shine**</li>
+            <li class="mb-2">
+              Helps reduce fiber porosity for a longer lasting color
+            </li>
+            <li>92% color intensity preserved after 6 weeks***</li>
+          </ul>
+          <p
+            class="font-AvenirLTStd text-xs text-center px-6 pt-4 text-gray"
+            data-aos="fade-up"
+          >
+            * Instrumental test: Bain Riche Chroma Respect + Soin Acide Chroma
+            Gloss + Masque Chroma Filler<br />
+            ** Instrumental test<br />
+            *** Instrumental test: Bain Riche Chroma Respect + Soin Acide Chroma
+            Gloss
+          </p>
+        </section>
+
+        <!-- Diagnosis section -->
+
+        <section id="diagnosis" class="pt-16">
+          <h2
+            class="
+              font-PlayfairDisplay
+              text-5xl
+              leading-snug
+              text-grey
+              underline
+            "
+            data-aos="fade-up"
+          >
+            Diagnosis
+          </h2>
+          <p
+            class="font-PlayfairDisplay text-3xl text-grey mt-2 mb-4"
+            data-aos="fade-up"
+          >
+            Looking for the perfect<br />routine for your colored<br />hair?
+          </p>
+          <div class="overflow-hidden">
+            <img
+              src="assets/img/chroma/CHROMAABSOLU_ROUTINE1.jpg"
+              alt=""
+              class="mb-4"
+              data-aos="zoom-out"
+            />
+          </div>
+          <button-primary-component
+            v-on:click.native="overlayHidden = !overlayHidden"
+            data-aos="zoom-in"
+          >
+            TAKE THE DIAGNOSIS
+          </button-primary-component>
+        </section>
+
+        <!-- Pro tips section -->
+        <section id="pro-tips" class="pt-16">
+          <h2
+            class="
+              font-PlayfairDisplay
+              text-5xl
+              leading-snug
+              text-grey
+              underline
+            "
+            data-aos="fade-up"
+          >
+            Pro tips
+          </h2>
+          <p
+            class="font-PlayfairDisplay text-3xl text-grey mt-2 mb-6 mx-2"
+            data-aos="fade-up"
+          >
+            5 tips to keep your dyed hair healthy by our Kérastase ambassador
+            Hovig Etoyan
+          </p>
+
+          <figure class="relative refresher">
+            <div class="overflow-hidden">
+              <img
+                src="assets/img/chroma/portrait-pro-tips.jpg"
+                alt=""
+                data-aos="zoom-out"
+              />
+            </div>
+            <figcaption
+              class="
+                flex flex-col
+                justify-start
+                text-base
+                p-5
+                mx-4
+                bg-white
+                relative
+                -mt-6
+                font-AvenirLTStd
+                text-left
+              "
+              data-aos="fade-in"
+            >
+              <div class="flex flex-row items-center justify-start mt-2 mb-6">
+                <div
+                  class="
+                    flex
+                    w-1/12
+                    h-3
+                    bg-svg-1-black bg-no-repeat bg-center bg-contain
+                  "
+                  data-aos="fade-up"
+                ></div>
+                <p class="ml-4 w-full" data-aos="fade-up">
+                  To prevent your color from stripping away, use a sulfate free
+                  shampoo such as the Bain Riche Chroma Respect or Bain Chroma
+                  Respect.
+                </p>
+              </div>
+
+              <div class="flex flex-row items-center justify-start mb-6">
+                <div
+                  class="
+                    flex
+                    w-1/12
+                    h-3
+                    bg-svg-2-black bg-no-repeat bg-center bg-contain
+                  "
+                  data-aos="fade-up"
+                ></div>
+                <p class="ml-4 w-full" data-aos="fade-up">
+                  After coloring service, wait 2 days before shampoo. This will
+                  give the color plenty of time to set.
+                </p>
+              </div>
+
+              <div class="flex flex-row items-center justify-start mb-6">
+                <div
+                  class="
+                    flex
+                    w-1/12
+                    h-3
+                    bg-svg-3-black bg-no-repeat bg-center bg-contain
+                  "
+                  data-aos="fade-up"
+                ></div>
+                <p class="ml-4 w-full" data-aos="fade-up">
+                  Always use a heat protection before blow-dry like the Serum
+                  Chroma Thermique that not only protects your hair from Heat
+                  damages but also from UV induced damages and humidity.
+                </p>
+              </div>
+
+              <div class="flex flex-row items-center justify-start mb-6">
+                <div
+                  class="
+                    flex
+                    w-1/12
+                    h-3
+                    bg-svg-4-black bg-no-repeat bg-center bg-contain
+                  "
+                  data-aos="fade-up"
+                ></div>
+                <p class="ml-4 w-full" data-aos="fade-up">
+                  If you don't have time to treat your hair with a masque every
+                  washing day, take some time in the weekend to nourish your
+                  colored hair by using Masque Chroma Filler and add a hot towel
+                  on top for extra care.
+                </p>
+              </div>
+
+              <div class="flex flex-row items-center justify-start mb-6">
+                <div
+                  class="
+                    flex
+                    w-1/12
+                    h-3
+                    bg-svg-5-black bg-no-repeat bg-center bg-contain
+                  "
+                  data-aos="fade-up"
+                ></div>
+                <p class="ml-4 w-full" data-aos="fade-up">
+                  To avoid open cuticles that will lead you to a premature color
+                  fading, remember to rinse your hair with cold water and to
+                  preserve your color even longer use Soin Acide Chroma Gloss
+                  once a week.
+                </p>
+              </div>
+            </figcaption>
+          </figure>
+        </section>
+
+        <!-- How to Apply -->
+
+        <section id="howTo" class="pt-16">
+          <h2
+            class="
+              font-PlayfairDisplay
+              text-5xl
+              leading-snug
+              text-grey
+              underline
+            "
+            data-aos="fade-up"
+          >
+            How to apply
+          </h2>
+          <p
+            class="font-AvenirLTStd text-xs text-center px-6 pt-4 text-gray"
+            data-aos="fade-up"
+          >
+            Don't forget to turn off the water while applying products under the
+            shower !
+          </p>
+          <div
+            class="
+              flex
+              items-center
+              justify-center
+              mt-8
+              mb-2
+              h-12
+              bg-svg-1 bg-no-repeat bg-center bg-contain
+            "
+            data-aos="fade-up"
+          >
+            <h3 class="font-PlayfairDisplay text-4xl text-grey">Apply</h3>
+          </div>
+          <div class="overflow-hidden">
+            <img
+              src="assets/img/chroma/Bain Riche Chroma Respect 1.gif"
+              alt="step 1"
+              class="w-full"
+              data-aos="zoom-out"
+            />
+          </div>
+          <div
+            class="
+              flex
+              items-center
+              justify-center
+              mt-6
+              mb-2
+              h-12
+              bg-svg-2 bg-no-repeat bg-center bg-contain
+            "
+            data-aos="fade-up"
+          >
+            <h3 class="font-PlayfairDisplay text-4xl text-grey">Distribute</h3>
+          </div>
+          <p class="font-AvenirLTStd text-base mb-4" data-aos="fade-up">
+            Add water and develop foam
+          </p>
+          <div class="overflow-hidden">
+            <img
+              src="assets/img/chroma/Bain Riche Chroma Respect 2.gif"
+              alt="step 1"
+              class="w-full mb-12"
+              data-aos="zoom-out"
+            />
+          </div>
+          <div
+            class="
+              flex
+              items-center
+              justify-center
+              mt-6
+              mb-2
+              h-12
+              bg-svg-3 bg-no-repeat bg-center bg-contain
+            "
+            data-aos="fade-up"
+          >
+            <h3 class="font-PlayfairDisplay text-4xl text-grey">Rinse</h3>
+          </div>
+          <p class="font-AvenirLTStd text-base mb-4 px-6" data-aos="fade-up">
+            Rinse Bain Riche Chroma Respect thoroughly and repeat.
+          </p>
+          <div class="overflow-hidden">
+            <img
+              src="assets/img/chroma/Bain Riche Chroma Respect 3.gif"
+              alt="step 1"
+              class="w-full mb-12"
+              data-aos="zoom-out"
+            />
+          </div>
+        </section>
+
+        <!-- Before/After section -->
+
+        <section id="beforeAfter" class="pt-16">
+          <h2
+            class="
+              font-PlayfairDisplay
+              text-5xl
+              leading-snug
+              text-grey
+              underline
+              mb-6
+            "
+            data-aos="fade-up"
+          >
+            Before / After *
+          </h2>
+          <div class="overflow-hidden">
+            <img-comparison-slider
+              class="slider-beforeAfter"
+              data-aos="fade-up"
+            >
+              <img slot="before" src="assets/img/chroma/After.jpg" />
+              <img slot="after" src="assets/img/chroma/Before.jpg" />
+              <img slot="handle" src="assets/img/icons/arrow.svg" />
+            </img-comparison-slider>
+          </div>
+          <p
+            class="font-AvenirLTStd text-base mb-4 mt-4 px-6"
+            data-aos="fade-up"
+          >
+            * Illustration of the contemplated results obtained after applying
+            Chroma Absolu range – results may vary from one individual to
+            another.
+          </p>
+        </section>
+
+        <!-- Color damage section -->
+
+        <section id="colorDamage" class="pt-16">
+          <h2
+            class="
+              font-PlayfairDisplay
+              text-5xl
+              leading-snug
+              text-grey
+              underline
+            "
+            data-aos="fade-up"
+          >
+            Color damage
+          </h2>
+          <p
+            class="font-PlayfairDisplay text-3xl text-grey mt-2 mb-4 px-2"
+            data-aos="fade-up"
+          >
+            How does hair color sensitize my hair?
+          </p>
+          <figure class="relative refresher mb-4">
+            <div class="overflow-hidden">
+              <img
+                src="assets/img/chroma/color-damage.jpg"
+                class="w-full"
+                alt=""
+                data-aos="zoom-out"
+              />
+            </div>
+            <figcaption
+              class="
+                flex flex-col
+                items-center
+                font-PlayfairDisplay
+                text-xl
+                px-4
+                py-6
+                mx-4
+                bg-white
+                relative
+                -mt-6
+              "
+              data-aos="fade-in"
+            >
+              Alkaline agents in hair color can create holes in the fiber, so
+              pigments penetrate the core. As a result, hair feels porous, with
+              a rough texture and as time goes by the color fades away.
+            </figcaption>
+          </figure>
+          <p
+            class="font-PlayfairDisplay text-3xl text-grey mb-6 mt-6 px-2"
+            data-aos="fade-up"
+          >
+            The 3 levels of color damages
+          </p>
+
+          <figure class="relative refresher mb-6 m-4">
+            <!-- Damages at the core -->
+            <div class="overflow-hidden bg-lighterGray p-6" data-aos="fade-in">
+              <p class="mb-2" style="color: #a9585e">
+                <b>Damages at the core</b>
+              </p>
+              <p class="mb-6" style="color: #a9585e">
+                Augmente porosity weakens fiber, letting moisture and color
+                escape.
+              </p>
+            </div>
+            <figcaption
+              class="
+                flex flex-col
+                items-center
+                font-AvenirLTStd
+                text-base
+                p-4
+                mx-4
+                bg-white
+                relative
+                -mt-6
+                mb-8
+              "
+              data-aos="fade-in"
+            >
+              <b>With Chroma Absolu</b>
+              <span class="font-PlayfairDisplay text-3xl">+96% strength*</span>
+              <p class="font-AvenirLTStd text-xs text-center pt-4 text-gray">
+                * Instrumental test on Soin Acide Chroma Gloss + Sérum Chroma
+                Thermique
+              </p>
+            </figcaption>
+
+            <!-- Damages at the middle -->
+            <div class="overflow-hidden bg-lighterGray p-4" data-aos="fade-in">
+              <p class="mb-2 px-2" style="color: #a9585e">
+                <b>Damages at the middle</b>
+              </p>
+              <p class="mb-6 px-2" style="color: #a9585e">
+                Environmental aggressors like UV damage, heating tools and hard
+                water, accelerate color oxidation and limit shine potential.
+              </p>
+            </div>
+            <figcaption
+              class="
+                flex flex-col
+                items-center
+                font-AvenirLTStd
+                text-base
+                p-4
+                mx-4
+                bg-white
+                relative
+                -mt-6
+                mb-8
+              "
+              data-aos="fade-in"
+            >
+              <b>With Chroma Absolu</b>
+              <span class="font-PlayfairDisplay text-3xl">+74% shine*</span>
+              <p class="font-AvenirLTStd text-xs text-center pt-4 text-gray">
+                * Instrumental test after Bain Chroma Respect
+              </p>
+            </figcaption>
+
+            <!-- Damages at the surface -->
+            <div class="overflow-hidden bg-lighterGray p-4" data-aos="fade-in">
+              <p class="mb-2 px-4" style="color: #a9585e">
+                <b>Damages at the surface</b>
+              </p>
+              <p class="mb-6 px-4" style="color: #a9585e">
+                Cuticle is rough and dry, triggering color induced frizz.
+              </p>
+            </div>
+            <figcaption
+              class="
+                flex flex-col
+                items-center
+                font-AvenirLTStd
+                text-base
+                p-4
+                mx-4
+                bg-white
+                relative
+                -mt-6
+                mb-8
+              "
+              data-aos="fade-in"
+            >
+              <b>With Chroma Absolu</b>
+              <span class="font-PlayfairDisplay text-3xl px-4"
+                >72h of lasting anti-frizz*</span
+              >
+              <p
+                class="font-AvenirLTStd text-xs text-center px-6 pt-4 text-gray"
+              >
+                * Instrumental test after Sérum Chroma Thermique
+              </p>
+            </figcaption>
+          </figure>
+
+          <p
+            class="font-PlayfairDisplay text-xl text-grey mb-4"
+            data-aos="fade-up"
+          >
+            Watch the performance of our product
+          </p>
+          <iframe
+            height="250"
+            data-aos="fade-in"
+            class="w-full mb-10"
+            src="https://www.youtube.com/embed/FyGRU3y1x0s?controls=0?modestbranding=1"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+          <h2
+            class="font-PlayfairDisplay text-3xl text-grey mb-1"
+            data-aos="fade-up"
+          >
+            Care sets you free
+          </h2>
+          <h3
+            class="font-PlayfairDisplay text-xl text-grey mb-4"
+            data-aos="fade-up"
+          >
+            #youdarewecare
+          </h3>
+          <iframe
+            height="250"
+            data-aos="fade-in"
+            class="w-full"
+            src="https://www.youtube.com/embed/rXrAutZ7HQ0?controls=0?modestbranding=1"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </section>
+
+        <!-- What's inside section -->
+
+        <section id="whatsInside" class="pt-16">
+          <h2
+            class="
+              font-PlayfairDisplay
+              text-5xl
+              leading-snug
+              text-grey
+              underline
+            "
+            data-aos="fade-up"
+          >
+            What’s inside
+          </h2>
+          <p
+            class="font-PlayfairDisplay text-3xl text-grey mt-2 mb-4 px-4"
+            data-aos="fade-up"
+          >
+            Powered by the science of 3 ultra-caring acids:
+          </p>
+          <div
+            class="
+              flex flex-wrap
+              justify-center
+              font-PlayfairDisplay
+              text-xl text-grey
+              mb-4
+              px-8
+              leading-8
+            "
+          >
+            <!-- Amino Acid -->
+
+            <button
+              id="show1"
+              class="w-max mx-1 underline px-1 mt-2"
+              style="background-color: #efd1e1"
+              data-aos="fade-up"
+            >
+              Amino Acid*
+            </button>
+            <div
+              id="infobulle1"
+              style="display: none"
+              class="absolute bg-darkerGray w-full h-auto mt-4 z-50 left-0"
+            >
+              <img
+                src="assets/img/chroma/wi-texture-masquefiller.jpg"
+                alt=""
+                class="w-1/2 p-2 relative float-left"
+              />
+              <div
+                class="
+                  relative
+                  text-white
+                  float-left
+                  font-AvenirLTStd
+                  text-base text-left
+                  w-2/5
+                  mt-6
+                  ml-2
+                "
+              >
+                <b
+                  >Penetrates fiber core to rebuild and strengthen from
+                  within.​</b
+                ><br />
+                <span class="text-xs"
+                  >*Bio-based ingredient of natural origin issued from
+                  biotechnologies.​</span
+                >
+              </div>
+              <div class="font-AvenirLTStd absolute top-1 right-2 text-white">
+                X
+              </div>
+            </div>
+
+            <!-- Lactic Acid -->
+            <button
+              id="show2"
+              class="w-max mx-1 underline px-1 mt-2"
+              style="background-color: #efd1e1"
+              data-aos="fade-up"
+            >
+              Lactic Acid*
+            </button>
+            <div
+              id="infobulle2"
+              style="display: none"
+              class="absolute bg-darkerGray w-full h-auto mt-4 z-50 left-0"
+            >
+              <img
+                src="assets/img/chroma/wi-texture-bainriche.jpg"
+                alt=""
+                class="w-1/2 p-2 relative float-left"
+              />
+              <div
+                class="
+                  relative
+                  text-white
+                  float-left
+                  font-AvenirLTStd
+                  text-base text-left
+                  w-2/5
+                  mt-6
+                  ml-2
+                "
+              >
+                <b
+                  >Transforms fiber surface to seal, smooth and eliminate color
+                  induced frizz.</b
+                ><br />
+                <span class="text-xs"
+                  >*Bio-based ingredient of vegetal origin.</span
+                >
+              </div>
+              <div class="font-AvenirLTStd absolute top-1 right-2 text-white">
+                X
+              </div>
+            </div>
+
+            <!-- Tartaric Acid -->
+            <button
+              id="show3"
+              class="w-max mx-1 underline px-1 mt-2"
+              style="background-color: #efd1e1"
+              data-aos="fade-up"
+            >
+              Tartaric Acid*
+            </button>
+            <div
+              id="infobulle3"
+              style="display: none"
+              class="absolute bg-darkerGray w-full h-auto mt-12 z-50 left-0"
+            >
+              <img
+                src="assets/img/chroma/wi-texture-masquevert.jpg"
+                alt=""
+                class="w-1/2 p-2 relative float-left"
+              />
+              <div
+                class="
+                  relative
+                  text-white
+                  float-left
+                  font-AvenirLTStd
+                  text-base text-left
+                  w-2/5
+                  mt-4
+                  ml-2
+                "
+              >
+                <b
+                  >Helps protect color and shields fiber against external
+                  aggressors.​</b
+                ><br />
+                <span class="text-xs"
+                  >*Bio-based ingredient of natural origin issued from grape
+                  (vitis vinifera).</span
+                >
+              </div>
+              <div class="font-AvenirLTStd absolute top-1 right-2 text-white">
+                X
+              </div>
+            </div>
+          </div>
+
+          <img
+            src="assets/img/chroma/wi-acids.jpg"
+            alt=""
+            class="w-full mb-12"
+            data-aos="zoom-in"
+          />
+          <h3
+            class="font-PlayfairDisplay text-3xl text-grey mb-4"
+            data-aos="fade-up"
+          >
+            With Centella Asiatica
+          </h3>
+          <img
+            src="assets/img/chroma/wi-plant.jpg"
+            class="bg-white"
+            alt=""
+            class="mb-4"
+            data-aos="zoom-in"
+          />
+          <div
+            class="
+              font-AvenirLTStd
+              text-base
+              mx-4
+              mt-6
+              mb-12
+              p-6
+              bg-lighterGray
+              relative
+            "
+            data-aos="fade-in"
+          >
+            <h3
+              class="font-PlayfairDisplay text-3xl text-grey mb-4"
+              data-aos="fade-up"
+            >
+              Millenary plant
+            </h3>
+            <p data-aos="fade-in">
+              Known for its regenerative and healing properties.
+            </p>
+          </div>
+          <h3
+            class="font-PlayfairDisplay text-3xl text-grey mb-4"
+            data-aos="fade-up"
+          >
+            Indulgent sensoriality
+          </h3>
+          <img
+            src="assets/img/chroma/wi-sensoriality.jpg"
+            class="bg-white"
+            alt=""
+            class="mb-4"
+            data-aos="zoom-in"
+          />
+          <div
+            class="
+              font-AvenirLTStd
+              text-base
+              mx-4
+              mt-6
+              mb-12
+              p-6
+              bg-lighterGray
+              relative
+            "
+            data-aos="fade-in"
+          >
+            <h3
+              class="font-PlayfairDisplay text-3xl text-grey mb-2"
+              data-aos="fade-up"
+            >
+              Nerolist perfume
+            </h3>
+            <h4
+              class="font-PlayfairDisplay text-xl text-grey mb-2"
+              data-aos="fade-up"
+            >
+              72h Intense Fragrance Halo*
+            </h4>
+            <p class="mb-4" data-aos="fade-up">A unique new luxurious scent</p>
+            <p class="mb-4 px-4" data-aos="fade-up">
+              <b>Top notes</b><br />Neroli & Cardamom
+            </p>
+            <p class="mb-4 px-4" data-aos="fade-up">
+              <b>Middle notes</b><br />Tuberose, Orange Blossom and Freesia
+            </p>
+            <p class="mb-4 px-4" data-aos="fade-up">
+              <b>Bottom notes</b><br />Sandwood, Musk and Gaiac Wood
+            </p>
+            <p class="text-xs text-gray" data-aos="fade-up">
+              *Instrumental test: Bain Riche Chroma Respect + Masque Chroma
+              Filler + Sérum Chroma Thermique
+            </p>
+          </div>
+        </section>
+
+        <!-- How it's made section -->
+
+        <section id="howItsMade" class="pt-16">
+          <h2
+            class="
+              font-PlayfairDisplay
+              text-5xl
+              leading-snug
+              text-grey
+              underline
+            "
+            data-aos="fade-up"
+          >
+            Sustainability
+          </h2>
+
+          <!-- Packaging -->
+          <img
+            src="assets/img/icons/packaging.png"
+            height="50"
+            alt=""
+            class="block mx-auto mb-2 mt-6"
+            data-aos="fade-zoom-in"
+          />
+          <p
+            class="font-PlayfairDisplay text-3xl text-grey mb-4"
+            data-aos="fade-up"
+          >
+            Packaging
+          </p>
+          <div class="overflow-hidden">
+            <img
+              src="assets/img/chroma/howItsMade.jpg"
+              alt=""
+              data-aos="zoom-out"
+              class="w-full"
+            />
+          </div>
+          <p
+            class="
+              font-PlayfairDisplay
+              text-xl
+              p-4
+              mb-2
+              mx-4
+              bg-white
+              relative
+              z-10
+              -mt-6
+            "
+            data-aos="fade-up"
+          >
+            Our shampoo bottles* are now made with 95% recycled plastic** and
+            are recyclable
+          </p>
+          <p class="font-AvenirLTStd text-xs text-center px-6 mb-6 text-gray">
+            * Excluding the cap<br />
+            ** The remaining 5% are dyes and additives
+          </p>
+
+          <!-- Factory -->
+          <img
+            src="assets/img/chroma/icons/factory.png"
+            height="50"
+            alt=""
+            class="block mx-auto mb-2 mt-12"
+            data-aos="fade-zoom-in"
+          />
+          <p
+            class="font-PlayfairDisplay text-3xl text-grey mb-4"
+            data-aos="fade-up"
+          >
+            Factory
+          </p>
+          <div class="overflow-hidden">
+            <img
+              src="assets/img/chroma/factory-1.jpg"
+              alt=""
+              data-aos="zoom-out"
+              class="w-full"
+            />
+          </div>
+          <p
+            class="
+              font-PlayfairDisplay
+              text-xl
+              p-4
+              mb-6
+              mx-4
+              bg-white
+              relative
+              z-10
+              -mt-6
+            "
+            data-aos="fade-up"
+          >
+            Since 2015 our factories achieved carbon neutrality using 100%
+            renewable energy
+          </p>
+
+          <div class="overflow-hidden">
+            <img
+              src="assets/img/chroma/factory-2.jpg"
+              alt=""
+              class="w-full"
+              data-aos="zoom-out"
+            />
+          </div>
+          <p
+            class="
+              font-PlayfairDisplay
+              text-xl
+              p-4
+              mb-2
+              mx-4
+              bg-white
+              relative
+              z-10
+              -mt-6
+            "
+            data-aos="fade-up"
+          >
+            100% of the water used for production processes is recycled and
+            reused.
+          </p>
+          <p class="font-AvenirLTStd text-center px-12 mb-6 text-gray">
+            In 2020, our factory saved 32 million liters of water.
+          </p>
+        </section>
+
+        <!-- Our commitment section -->
+
+        <section class="pt-2">
+          <h3
+            class="font-PlayfairDisplay text-3xl text-grey mb-4"
+            data-aos="fade-up"
+          >
+            Our commitment
+          </h3>
+          <figure class="relative refresher">
+            <div class="overflow-hidden">
+              <img
+                src="assets/img/chroma/wi_oilfree.png"
+                class="bg-lighterGray"
+                alt=""
+                data-aos="zoom-out"
+              />
+            </div>
+            <figcaption
+              class="
+                flex flex-col
+                items-center
+                font-PlayfairDisplay
+                text-xl
+                p-4
+                mx-4
+                bg-white
+                relative
+                -mt-6
+              "
+              data-aos="fade-in"
+            >
+              Kérastase does not test any of its products or any of its
+              ingredients on animals.
+              <a
+                href="https://au-coeur-de-nos-produits.loreal.fr/"
+                class="
+                  font-DinCondensed font-bold
+                  outline-none
+                  uppercase
+                  text-black
+                  underline
+                  my-4
+                "
+              >
+                know more about it
+              </a>
+            </figcaption>
+          </figure>
+        </section>
+
+        <!-- The Range section -->
+
+        <section id="theRange" class="pt-20">
+          <h2
+            class="
+              font-PlayfairDisplay
+              text-5xl
+              leading-snug
+              text-grey
+              underline
+            "
+            data-aos="fade-up"
+          >
+            The range
+          </h2>
+          <p
+            class="font-PlayfairDisplay text-xl text-grey mt-2 mb-6"
+            data-aos="fade-up"
+          >
+            Find out more about our products
+          </p>
+          <div class="swiper-bottom-container relative overflow-hidden">
+            <div class="swiper-wrapper mb-2">
+              <!-- N°1 -->
+              <div class="swiper-slide flex flex-col">
+                <img
+                  src="assets/img/carousel/range/bain-chroma-respect.jpg"
+                  class="w-full mb-6"
+                  alt=""
+                />
+                <p class="font-PlayfairDisplay text-3xl uppercase px-10">
+                  Bain<br />Chroma respect
+                </p>
+                <a
+                  href="#"
+                  class="
+                    font-DinCondensed font-bold
+                    outline-none
+                    uppercase
+                    text-black
+                    underline
+                    my-4
+                  "
+                >
+                  learn more
+                </a>
+              </div>
+              <!-- N°2 -->
+              <div class="swiper-slide flex flex-col">
+                <img
+                  src="assets/img/carousel/range/bain-riche-respect.jpg"
+                  class="w-full mb-6"
+                  alt=""
+                />
+                <p class="font-PlayfairDisplay text-3xl uppercase px-10">
+                  Bain Riche chroma respect
+                </p>
+                <a
+                  href="#"
+                  class="
+                    font-DinCondensed font-bold
+                    outline-none
+                    uppercase
+                    text-black
+                    underline
+                    my-6
+                  "
+                >
+                  learn more
+                </a>
+              </div>
+              <!-- N°3 -->
+              <div class="swiper-slide flex flex-col">
+                <img
+                  src="assets/img/carousel/range/fondant-cica-chroma.jpg"
+                  class="w-full mb-6"
+                  alt=""
+                />
+                <p class="font-PlayfairDisplay text-3xl uppercase px-10">
+                  Fondant<br />Cica chroma
+                </p>
+                <a
+                  href="#"
+                  class="
+                    font-DinCondensed font-bold
+                    outline-none
+                    uppercase
+                    text-black
+                    underline
+                    my-6
+                  "
+                >
+                  learn more
+                </a>
+              </div>
+              <!-- N°4 -->
+              <div class="swiper-slide flex flex-col">
+                <img
+                  src="assets/img/carousel/range/masque-chroma-filler.jpg"
+                  class="w-full mb-6"
+                  alt=""
+                />
+                <p class="font-PlayfairDisplay text-3xl uppercase px-10">
+                  Masque<br />Chroma Filler
+                </p>
+                <a
+                  href="#"
+                  class="
+                    font-DinCondensed font-bold
+                    outline-none
+                    uppercase
+                    text-black
+                    underline
+                    my-6
+                  "
+                >
+                  learn more
+                </a>
+              </div>
+              <!-- N°5 -->
+              <div class="swiper-slide flex flex-col">
+                <img
+                  src="assets/img/carousel/range/soin-acide-chroma-gloss.jpg"
+                  class="w-full mb-6"
+                  alt=""
+                />
+                <p class="font-PlayfairDisplay text-3xl uppercase px-10">
+                  Soin Acide<br />chroma Gloss
+                </p>
+                <a
+                  href="#"
+                  class="
+                    font-DinCondensed font-bold
+                    outline-none
+                    uppercase
+                    text-black
+                    underline
+                    my-6
+                  "
+                >
+                  learn more
+                </a>
+              </div>
+              <!-- N°6 -->
+              <div class="swiper-slide flex flex-col">
+                <img
+                  src="assets/img/carousel/range/masque-vert-chroma-neutra.jpg"
+                  class="w-full mb-6"
+                  alt=""
+                />
+                <p class="font-PlayfairDisplay text-3xl uppercase px-6">
+                  Masque<br />Vert Neutralisant
+                </p>
+                <a
+                  href="#"
+                  class="
+                    font-DinCondensed font-bold
+                    outline-none
+                    uppercase
+                    text-black
+                    underline
+                    my-6
+                  "
+                >
+                  learn more
+                </a>
+              </div>
+              <!-- N°7 -->
+              <div class="swiper-slide flex flex-col">
+                <img
+                  src="assets/img/carousel/range/serum-chroma-thermique.jpg"
+                  class="w-full mb-6"
+                  alt=""
+                />
+                <p class="font-PlayfairDisplay text-3xl uppercase px-6">
+                  Sérum<br />chroma Thermique
+                </p>
+                <a
+                  href="#"
+                  class="
+                    font-DinCondensed font-bold
+                    outline-none
+                    uppercase
+                    text-black
+                    underline
+                    my-6
+                  "
+                >
+                  learn more
+                </a>
+              </div>
+            </div>
+            <div class="swiper-pagination -my-3"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+          </div>
+        </section>
+
+        <!-- Only in Salon section -->
+
+        <section id="onlyInSalon" class="pt-16 pb-20">
+          <h2
+            class="
+              font-PlayfairDisplay
+              text-5xl
+              leading-snug
+              text-grey
+              underline
+            "
+            data-aos="fade-up"
+          >
+            Only in-salon
+          </h2>
+          <h3
+            class="font-PlayfairDisplay text-3xl text-grey mt-2 mb-3"
+            data-aos="fade-up"
+          >
+            Fusio Dose
+          </h3>
+          <figure class="relative refresher">
+            <div class="overflow-hidden">
+              <img
+                src="assets/img/chroma/fusio-dose.gif"
+                alt=""
+                data-aos="zoom-out"
+              />
+            </div>
+          </figure>
+
+          <div class="font-AvenirLTStd block text-sm text-left p-6">
+            <p class="mb-2" data-aos="fade-up">
+              Personalized haircare treatment for instant hair transformation.
+            </p>
+            <p class="mb-2" data-aos="fade-up">
+              A 5-minute hair treatment with 42 possible combinations: 2 hair
+              needs answered in one shot after a thoughtful diagnosis performed
+              by your hairdresser.
+            </p>
+            <p data-aos="fade-up">
+              Looking for a healthy, protected color? Try our Booster
+              Resurfaçant and Concentré Acide Aminé.<br />This powerful caring
+              combination will make your hair recover from color induced damage
+              to transform its texture, protect its intensity and boost shine.
+            </p>
+          </div>
+
+          <img
+            src="assets/img/chroma/fusio-dose-2.jpg"
+            alt=""
+            class="inline-block mb-4"
+            data-aos="zoom-out"
+          />
+          <a
+            href="https://hair-salons.kerastase.com/"
+            class="
+              inline-block
+              mt-4
+              px-6
+              mb-12
+              py-2
+              font-DinCondensed
+              text-white
+              cursor-pointer
+              bg-darkerGray
+              tracking-wider
+            "
+            data-aos="fade-in"
+          >
+            <span>FIND YOUR NEAREST SALON</span>
+          </a>
+        </section>
+      </div>
+    </div>
+
+    <!-- import VueJS -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+    <!-- import Scrollactive (scroll navigation into page) library -->
+    <script src="https://cdn.jsdelivr.net/npm/vue-scrollactive@0.9.3/dist/vue-scrollactive.min.js"></script>
+
+    <!-- import Swiper library (carousel, diagnosis, routines) -->
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+    <script src="js/diagnostic.js"></script>
+
+    <!-- import AOS animation library -->
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    <script>
+      $(document).on("click", function (e) {
+        if ($(e.target).is("#show1")) {
+          $("#infobulle1").show();
+        } else {
+          $("#infobulle1").hide();
+        }
+      });
+
+      $(document).on("click", function (e) {
+        if ($(e.target).is("#show2")) {
+          $("#infobulle2").show();
+        } else {
+          $("#infobulle2").hide();
+        }
+      });
+
+      $(document).on("click", function (e) {
+        if ($(e.target).is("#show3")) {
+          $("#infobulle3").show();
+        } else {
+          $("#infobulle3").hide();
+        }
+      });
+    </script>
+
+    <script>
+      // AOS animation library initialization
+      AOS.init({
+        duration: 600,
+      });
+
+      // Top carousel initialization
+      let swiperTop = new Swiper(".swiper-top-container", {
+        pagination: {
+          el: ".swiper-pagination",
+        },
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      });
+
+      // Bottom carousel initialization
+      let swiperBottom = new Swiper(".swiper-bottom-container", {
+        pagination: {
+          el: ".swiper-pagination",
+        },
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,123 @@
+.main-container,
+.overlay,
+.slider {
+  max-width: 414px;
+  padding: 0;
+}
+
+.main-header {
+  width: 100%;
+  height: 50px;
+  margin: 0;
+}
+
+.main-header img {
+  width: 85px;
+}
+
+.button-stepper {
+  min-width: 120px;
+}
+
+.active {
+  background-color: black;
+  opacity: 1;
+}
+
+.bg-overlay {
+  background-color: white;
+}
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-pagination-bullet {
+  width: 15px;
+  height: 5px;
+  border-radius: 0;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.swiper-top-container .swiper-pagination-bullet {
+  width: 15px;
+  height: 5px;
+  border-radius: 0;
+  background-color: #e3bba2 !important;
+  opacity: 0.5;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: rgba(0, 0, 0, 1) !important;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.swiper-top-container .swiper-pagination-bullet-active {
+  background-color: #e3bba2 !important;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  opacity: 1;
+}
+
+.swiper-button-next {
+  background-image: url(../assets/img/carousel/next.png);
+  background-repeat: no-repeat;
+  background-size: 40% auto;
+  background-position: center;
+  top: 300px;
+  position: absolute;
+}
+
+.swiper-button-next::after {
+  display: none;
+}
+
+.swiper-button-prev {
+  background-image: url(../assets/img/carousel/prev.png);
+  background-repeat: no-repeat;
+  background-size: 40% auto;
+  background-position: center;
+  top: 300px;
+  position: absolute;
+}
+
+.swiper-button-prev::after {
+  display: none;
+}
+
+.swiper-slide {
+  justify-content: start;
+}
+
+.flex-gap {
+  max-width: inherit;
+}
+
+.flex-gap > * {
+  --gap: 20px;
+  margin: 0 calc(var(--gap) / 2);
+  padding: 5px 10px;
+}
+
+.flex-gap > a:first-child {
+  margin-left: var(--gap);
+}
+
+.flex-gap > a:last-child {
+  margin-right: var(--gap);
+}
+
+.active-link {
+  color: white;
+  font-weight: 700;
+  background-color: black;
+  border-radius: 20px;
+}
+
+.funnel-container section {
+  height: 100vh;
+  padding: 20px;
+  padding-top: 120px;
+}

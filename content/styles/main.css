@@ -1,0 +1,141 @@
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+section {
+  padding: 0 11px;
+}
+
+.main-container {
+  max-width: 414px;
+  padding: 0px;
+}
+
+.content {
+  padding: 12px;
+  padding-top: 20px;
+}
+
+.main-header {
+  height: 50px;
+  margin: 0;
+}
+
+.main-header img {
+  width: 85px;
+}
+
+.funnel {
+  background-image: url("../assets/img/funnel_bg.png");
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  background-size: contain;
+}
+
+.funnel-container {
+  left: 0;
+  top: 150px;
+}
+
+/* Before / After */
+
+img-comparison-slider {
+  --divider-width: 4px;
+  --divider-color: #fff;
+  --handle-opacity: 0.75;
+  --handle-opacity-active: 1;
+}
+
+.slider-beforeAfter:focus {
+  outline: none;
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-top-container > .swiper-button-next {
+  top: 50%;
+}
+
+.swiper-bottom-container > .swiper-button-next {
+  top: 200px;
+}
+
+.swiper-product-one-container > .swiper-button-next,
+.swiper-product-two-container > .swiper-button-next {
+  top: 200px;
+}
+
+.swiper-top-container > .swiper-button-prev {
+  top: 50%;
+}
+
+.swiper-bottom-container > .swiper-button-prev {
+  top: 200px;
+}
+
+.swiper-product-one-container > .swiper-button-prev,
+.swiper-product-two-container > .swiper-button-prev {
+  top: 200px;
+}
+
+.bg-svg-1 {
+  background-image: url("../assets/img/icons/1.svg");
+}
+
+.bg-svg-2 {
+  background-image: url("../assets/img/icons/2.svg");
+}
+
+.bg-svg-3 {
+  background-image: url("../assets/img/icons/3.svg");
+}
+
+.bg-svg-4 {
+  background-image: url("../assets/img/icons/4.svg");
+}
+
+.bg-svg-1-black {
+  background-image: url("../assets/img/icons/1-black.svg");
+}
+
+.bg-svg-2-black {
+  background-image: url("../assets/img/icons/2-black.svg");
+}
+
+.bg-svg-3-black {
+  background-image: url("../assets/img/icons/3-black.svg");
+}
+
+.bg-svg-4-black {
+  background-image: url("../assets/img/icons/4-black.svg");
+}
+
+.bg-svg-5-black {
+  background-image: url("../assets/img/icons/5-black.svg");
+}
+
+.bg-svg-1-pink {
+  background-image: url("../assets/img/chroma/icons/1-pink.svg");
+}
+
+.bg-svg-2-pink {
+  background-image: url("../assets/img/chroma/icons/2-pink.svg");
+}
+
+.bg-svg-3-pink {
+  background-image: url("../assets/img/chroma/icons/3-pink.svg");
+}
+
+.bg-svg-4-pink {
+  background-image: url("../assets/img/chroma/icons/4-pink.svg");
+}
+
+.bg-svg-5-pink {
+  background-image: url("../assets/img/chroma/icons/5-pink.svg");
+}

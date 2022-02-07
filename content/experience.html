@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- font-face CSS -->
+    <link href="styles/fonts.css" rel="stylesheet" />
+
+    <!-- tailwind generated CSS -->
+    <link href="styles/tailwind.css" rel="stylesheet" />
+
+    <!-- aos animation lib css -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <!-- swiper lib css (used in carousel, diagnosis and routines) -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://unpkg.com/swiper/swiper-bundle.min.css"
+    />
+
+    <!-- diagnosis custom css -->
+    <link href="styles/diagnosis.css" rel="stylesheet" />
+
+    <!-- global custom css -->
+    <link href="styles/main.css" rel="stylesheet">
+
+    <!-- import before/after component lib -->
+    <script
+      type="module"
+      src="https://unpkg.com/img-comparison-slider@3/dist/component/component.esm.js"
+    ></script>
+    <script
+      nomodule=""
+      src="https://unpkg.com/img-comparison-slider@3/dist/component/component.js"
+    ></script>
+
+    <title>Expérience</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"
+    />
+  </head>
+  <body>
+    <div id="app" class="bg-lighterGray">
+      <div
+        class="main-container relative mx-auto bg-white text-center"
+        v-bind:class="{ 'h-screen overflow-hidden': answerSelected !== 0 || !overlayHidden }"
+      >
+
+        <!-- Diagnosis Pop-in -->
+
+        <overlay-component v-if="!overlayHidden">
+          <component class="mt-12" v-bind:is="currentStepComponent">
+            <template v-slot:answers-1>
+              <p class="font-PlayfairDisplay text-gray mb-6">
+                How is your curl level ?
+              </p>
+              <div
+                v-for="answer in answersOne"
+                v-bind:key="answer.id"
+                class="flex flex-col items-center cursor-pointer mb-12"
+                v-on:click="changeSlider(answer.id)"
+              >
+                <img class="w-50" v-bind:src="answer.img" />
+                <button-tertiary-component class="-m-3 w-24">
+                  {{ answer.title }}
+                </button-tertiary-component>
+              </div>
+            </template>
+
+            <template v-slot:answers-2>
+              <p class="font-PlayfairDisplay text-gray mb-6">
+                How is your hair ?
+              </p>
+              <div
+                v-for="answer in answersTwo"
+                v-bind:key="answer.id"
+                class="flex flex-col items-center cursor-pointer mb-12"
+                v-on:click="currentStep++"
+              >
+                <img class="w-12 p-1 mb-3" v-bind:src="answer.img" />
+                <button-tertiary-component class="-m-1 w-24"
+                  >{{ answer.title }}</button-tertiary-component
+                >
+              </div>
+            </template>
+
+            <template v-slot:answers-3>
+              <p class="font-PlayfairDisplay text-gray mb-6">Is your fiber ?</p>
+              <div
+                v-for="answer in answersThree"
+                v-bind:key="answer.id"
+                class="flex flex-col items-center cursor-pointer mb-12"
+                v-on:click="currentStep++"
+              >
+                <img class="w-12 mb-3" v-bind:src="answer.img" />
+                <button-tertiary-component class="-m-1 button-stepper"
+                  >{{ answer.title }}</button-tertiary-component
+                >
+              </div>
+            </template>
+
+            <template v-slot:answers-4>
+              <p class="font-PlayfairDisplay text-gray mb-6">
+                How do you like your curls ?
+              </p>
+              <div
+                v-for="answer in answersFour"
+                v-bind:key="answer.id"
+                class="flex flex-col items-center cursor-pointer mb-12"
+                v-on:click="hideOverlay()"
+              >
+                <img class="w-full" v-bind:src="answer.img" />
+                <button-tertiary-component class="-m-3 button-stepper"
+                  >{{ answer.title }}</button-tertiary-component
+                >
+              </div>
+            </template>
+          </component>
+
+          <div class="flex flex-row justify-center mb-10">
+            <button
+              v-for="step in steps"
+              v-bind:key="step"
+              v-bind:class="['w-3 h-1 m-1 bg-gray opacity-50 hover:opacity-100 outline-none step-button', { active: currentStep == step }]"
+              v-on:click="currentStep = step"
+            ></button>
+          </div>
+
+          <close-button-component v-on:click.native="resetOverlay()" />
+        </overlay-component>
+
+        <!-- Routines after diagnosis done -->
+        
+        <div v-if="answerSelected !== 0">
+          <div
+            class="slider bg-white overflow-hidden h-screen"
+            v-if="answerSelected == 1"
+          >
+            <p
+              class="flex items-center justify-center font-PlayfairDisplay text-gray my-6"
+            >
+              Recommended routine
+            </p>
+            <div
+              class="swiper-container flex flex-col justify-start bg-white h-full w-full"
+            >
+              <div class="swiper-wrapper">
+                <slot>
+                  <div
+                    v-for="slide in slideOne"
+                    v-bind:key="slide.id"
+                    class="swiper-slide flex flex-col items-center justify-center text-gray"
+                  >
+                    <img class="w-60" v-bind:src="slide.img" />
+                    <p
+                      class="mx-10 mb-4 font-PlayfairDisplay text-xl uppercase text-center"
+                      v-if="slide.title"
+                    >
+                      {{slide.title}}
+                    </p>
+                    <p
+                      class="mx-10 font-PlayfairDisplay text-black text-center"
+                    >
+                      {{slide.subtitle}}
+                    </p>
+
+                    <a v-if="visible" class="font-DinCondensed font-bold outline-none uppercase text-black underline my-6">
+                      where to buy this product
+                  </a>
+                  </div>
+                </slot>
+              </div>
+              <div class="swiper-pagination"></div>
+              <div class="swiper-button-prev"></div>
+              <div class="swiper-button-next"></div>
+            </div>
+            <close-button-component v-on:click.native="resetSlider()" />
+          </div>
+          <div
+            class="slider bg-white overflow-hidden h-screen"
+            v-if="answerSelected == 2"
+          >
+            <p
+              class="flex items-center justify-center font-PlayfairDisplay text-gray my-6"
+            >
+              Recommended routine
+            </p>
+            <div
+              class="swiper-container flex flex-col justify-start bg-white w-full"
+            >
+              <div class="swiper-wrapper">
+                <slot>
+                  <div
+                    v-for="slide in slideTwo"
+                    v-bind:key="slide.id"
+                    class="swiper-slide flex flex-col items-center justify-center text-gray"
+                  >
+                    <img class="w-60" v-bind:src="slide.img" />
+                    <p
+                      class="mx-10 mb-4 font-PlayfairDisplay text-xl uppercase text-center"
+                      v-if="slide.title"
+                    >
+                      {{slide.title}}
+                    </p>
+                    <p
+                      class="mx-10 font-PlayfairDisplay text-black text-center"
+                    >
+                      {{slide.subtitle}}
+                    </p>
+                    <link-component
+                      v-bind:href="slide.link"
+                      target="_blank"
+                      :visible="slide.link"
+                      ><slot>where to buy this product</slot>
+                    </link-component>
+                  </div>
+                </slot>
+              </div>
+              <div class="swiper-pagination"></div>
+              <div class="swiper-button-prev"></div>
+              <div class="swiper-button-next"></div>
+            </div>
+            <close-button-component v-on:click.native="resetSlider()" />
+          </div>
+          <div
+            class="slider bg-white overflow-hidden h-screen"
+            v-if="answerSelected == 3"
+          >
+            <p
+              class="flex items-center justify-center font-PlayfairDisplay text-gray my-6"
+            >
+              Recommended routine
+            </p>
+            <div
+              class="swiper-container flex flex-col justify-start bg-white w-full"
+            >
+              <div class="swiper-wrapper">
+                <slot>
+                  <div
+                    v-for="slide in slideThree"
+                    v-bind:key="slide.id"
+                    class="swiper-slide flex flex-col items-center justify-center text-gray"
+                  >
+                    <img class="w-60" v-bind:src="slide.img" />
+                    <p
+                      class="mx-10 mb-4 font-PlayfairDisplay text-xl uppercase text-center"
+                      v-if="slide.title"
+                    >
+                      {{slide.title}}
+                    </p>
+                    <p
+                      class="mx-10 font-PlayfairDisplay text-black text-center"
+                    >
+                      {{slide.subtitle}}
+                    </p>
+                    <link-component
+                      v-bind:href="slide.link"
+                      target="_blank"
+                      :visible="slide.link"
+                      ><slot>where to buy this product</slot>
+                    </link-component>
+                  </div>
+                </slot>
+              </div>
+              <div class="swiper-pagination"></div>
+              <div class="swiper-button-prev"></div>
+              <div class="swiper-button-next"></div>
+            </div>
+            <close-button-component v-on:click.native="resetSlider()" />
+          </div>
+        </div>
+
+        <header-component></header-component>
+
+        <!-- Navigation (with scrollactive library) -->
+
+        <scrollactive
+          class="sticky top-0 flex-gap m-0 py-4 inline-flex content-center flex-nowrap overflow-x-auto bg-white font-AvenirLTStd text-sm shadow-sm z-30"
+          active-class="active-link"
+        >
+          <a href="index.html">Home</a>
+          <a href="#product" class="scrollactive-item">Product</a>
+          <a href="#whatsInside" class="scrollactive-item">What's&nbsp;inside</a>
+          <a href="#beforeAfter" class="scrollactive-item">Before&nbsp;After</a>
+          <a href="#diagnosis" class="scrollactive-item">Diagnosis</a>
+          <a href="#curlsInSalon" class="scrollactive-item">Curls&nbsp;in&nbsp;salon</a>
+          <a href="#howItsMade" class="scrollactive-item">How&nbsp;it's&nbsp;made</a>
+          <a href="#theRange" class="scrollactive-item">The&nbsp;range</a>
+        </scrollactive>
+
+        <!-- Product section -->
+
+        <section id="product" class="pt-6">
+          <h2 class="font-PlayfairDisplay text-5xl leading-snug text-grey underline">Curl Manifesto</h2>
+          <p class="font-PlayfairDisplay text-lg text-grey mt-2 mb-4">Curl Manifesto is the ultimate professional care for all curls and coils.</p>
+          <img src="assets/img/experience/experience_1.jpg" class="w-full mb-4">
+          <p class="font-PlayfairDisplay text-lg text-grey mb-4">
+            Formulated with hydrating <span class="bg-beige text-grey px-1">Manuka Honey</span> and cementing <span class="bg-beige text-grey px-1">Ceramide</span>, it provides the perfect combination of <span class="bg-beige text-grey px-1">hydration, definition & strength</span>. As a result, you get beautiful, healthy and bouncy curls.
+          </p>
+          <ul class="bg-beige p-4 pl-8 font-AvenirLTStd text-left text-base list-disc">
+            <li class="mb-2">
+              <span class="block"><b>Strength</b></span>
+              99%* less breakage 
+            </li>
+            <li class="mb-2">
+              <span class="block"><b>Hydration</b></span>
+              73%* more hydration with no weigh down
+            </li>
+            <li>
+              <span class="block"><b>Definition</b></span>
+              81%* less unwanted frizz with perfect shape and movement.
+            </li>
+          </ul>
+          <p class="font-AvenirLTStd text-sm text-center px-6 py-4">
+            * Instrumental test, after application of the Curl Manifesto range.
+          </p>
+          <img src="assets/img/experience/experience_2.jpg" class="w-full">
+        </section>
+
+        <section class="pt-16">
+            <h2 class="font-PlayfairDisplay text-5xl leading-snug text-grey underline" data-aos="fade-up">Products</h2>
+            <div class="flex items-center justify-center my-6 h-12 bg-svg-1 bg-no-repeat bg-center bg-contain" data-aos="fade-up">
+                <h3 class="font-PlayfairDisplay text-4xl text-grey">Bath</h3>
+            </div>
+            <div class="overflow-hidden">
+                <img src="assets/img/experience/bath.jpg" alt="" class="w-full" data-aos="zoom-out" />
+            </div>
+            <p class="font-AvenirLTStd text-base p-4 mb-4 mx-4 bg-white relative z-10 -mt-12" data-aos="fade-in">
+                <span class="block mb-4 font-PlayfairDisplay text-xl uppercase text-center">
+                    Bain hydratation douceur
+                </span>
+                Gentle hydrating creamy shampoo for curly, very curly and coily hair. Gently cleanses scalp and hair without removing natural oils and intensely moisturizes curls.            </p>
+
+            <div class="flex items-center justify-center my-6 h-12 bg-svg-2 bg-no-repeat bg-center bg-contain" data-aos="fade-up">
+              <h3 class="font-PlayfairDisplay text-4xl text-grey">Treat</h3>
+            </div>
+
+            <div class="swiper-product-one-container relative overflow-hidden mb-10">
+              <div class="swiper-wrapper">
+                <div class="swiper-slide flex flex-col">
+                  <div class="overflow-hidden w-full">
+                    <img src="assets/img/experience/treat_1.jpg" class="w-full" alt="" data-aos="zoom-out" />
+                  </div>
+                  <p class="font-AvenirLTStd text-base p-4 mb-4 mx-4 bg-white relative z-10 -mt-12" data-aos="fade-in">
+                      <span class="block mb-4 font-PlayfairDisplay text-xl uppercase text-center">
+                        Fondant hydratation essentielle
+                      </span>
+                      Lightweight moisture replenishing conditioner for curly and very curly hair. Infuses curls with moisture with no weigh down, enhances bounce and gently detangles knots.                  </p>
+                </div>
+                <div class="swiper-slide flex flex-col">
+                  <div class="overflow-hidden w-full">
+                    <img src="assets/img/experience/treat_2.jpg" class="w-full" alt="" data-aos="zoom-out" />
+                  </div>
+                  <p class="font-AvenirLTStd text-base p-4 mb-6 mx-4 bg-white relative z-10 -mt-12" data-aos="fade-in">
+                      <span class="block mb-4 font-PlayfairDisplay text-xl uppercase text-center">
+                        Masque Beurre haute nutrition
+                      </span>
+                      Extra-rich nourishing mask treatment for very curly and coily hair. Intensely nourishes, promotes hair elasticity and reinforces brittle curls to prevent breakage.                  </p>
+                </div>
+              </div>
+              <div class="swiper-pagination"></div>
+              <div class="swiper-button-next"></div>
+              <div class="swiper-button-prev"></div>
+            </div>
+
+            <div class="flex items-center justify-center mb-6 h-12 bg-svg-3 bg-no-repeat bg-center bg-contain" data-aos="fade-up">
+              <h3 class="font-PlayfairDisplay text-4xl text-grey">Define</h3>
+            </div>
+
+            <div class="swiper-product-two-container relative overflow-hidden mb-10">
+              <div class="swiper-wrapper">
+                <div class="swiper-slide flex flex-col">
+                  <div class="overflow-hidden w-full">
+                    <img src="assets/img/experience/define_1.jpg" alt="" class="w-full" data-aos="zoom-out" />
+                  </div>
+                  <p class="font-AvenirLTStd text-base p-4 mb-4 mx-4 bg-white relative z-10 -mt-12" data-aos="fade-in">
+                      <span class="block mb-4 font-PlayfairDisplay text-xl uppercase text-center">
+                        Crème de jour fondamentale
+                      </span>
+                      Daily moisturizing frizz-reducing. Ultra-lightweight cream that provides hydration and heat protection while reducing frizz.
+                  </p>
+                </div>
+                <div class="swiper-slide flex flex-col">
+                  <div class="overflow-hidden w-full">
+                    <img src="assets/img/experience/define_2.jpg" alt="" class="w-full" data-aos="zoom-out" />
+                  </div>
+                  <p class="font-AvenirLTStd text-base p-4 mb-6 mx-4 bg-white relative z-10 -mt-12" data-aos="fade-in">
+                      <span class="block mb-4 font-PlayfairDisplay text-xl uppercase text-center">
+                        Gelée Curl Contour
+                      </span>
+                      Nourishing multi-use hair and scalp oil. This nourishing oil blend can be used in different steps to moisturize, define pattern and enhance shine.                  </p>
+                </div>
+                <div class="swiper-slide flex flex-col">
+                  <div class="overflow-hidden w-full">
+                    <img src="assets/img/experience/define_3.jpg" alt="" class="w-full" data-aos="zoom-out" />
+                  </div>
+                  <p class="font-AvenirLTStd text-base p-4 mb-6 mx-4 bg-white relative z-10 -mt-12" data-aos="fade-in">
+                    <span class="block mb-4 font-PlayfairDisplay text-xl uppercase text-center">
+                        Gelée Curl Contour
+                    </span>
+                    Curl enhancing. Combines the hydration properties of a cream and the hold of a gel for 24h frizz control*.
+                  </p>
+                </div>
+              </div>
+              <div class="swiper-pagination"></div>
+              <div class="swiper-button-next"></div>
+              <div class="swiper-button-prev"></div>
+            </div>
+
+            <div class="flex items-center justify-center mb-6 h-12 bg-svg-4 bg-no-repeat bg-center bg-contain" data-aos="fade-up">
+              <h3 class="font-PlayfairDisplay text-4xl text-grey">Refresh </h3>
+            </div>
+            <div class="overflow-hidden">
+              <img src="assets/img/experience/refresh.jpg" alt="" class="w-full" data-aos="zoom-out" />
+          </div>
+          <p class="font-AvenirLTStd text-base p-4 mb-4 mx-4 bg-white relative z-10 -mt-12" data-aos="fade-in">
+              <span class="block mb-4 font-PlayfairDisplay text-xl uppercase text-center">
+                REFRESH ABSOLU
+              </span>
+              Second day curl refreshing. Lightweight mist instantly rehydrates and reactivates curl definition, shine and bounce between washes.
+          </p>
+        </section>
+
+        <!-- What's inside section -->
+
+        <section id="whatsInside" class="pt-16">
+          <h2 class="font-PlayfairDisplay text-5xl leading-snug text-grey underline" data-aos="fade-up">What’s inside</h2>
+          <p class="font-PlayfairDisplay text-xl text-grey mt-2 mb-4" data-aos="fade-up">
+            Curl Manifesto features an expert<br/> formulation, combining science and<br/> luxury.
+          </p>
+          <img src="assets/img/wi_global.jpg" alt="" class="w-full mb-12" data-aos="zoom-in" />
+          <h3 class="font-PlayfairDisplay text-3xl text-grey mb-4" data-aos="fade-up">Precious Manuka Honey</h3>
+          <img src="assets/img/wi_honey.jpg" class="bg-white" alt="" class="mb-4" data-aos="zoom-in" />
+          <p class="font-AvenirLTStd text-base mx-4 mb-12 p-6 bg-lighterGray relative -mt-6" data-aos="fade-in">
+            Manuka honey is a powerful and rare honey known for its unique restorative properties. It is particularly used in the medical field.
+            <br><br>
+            Rich in minerals, nutrients and natural sugars, it is infused to boost the supply of nourishing agents to curly hair. It also helps restore vitality and shine to dry curls.
+          </p>
+          <h3 class="font-PlayfairDisplay text-3xl text-grey mb-4" data-aos="fade-up">Ceramide</h3>
+          <img src="assets/img/wi_ceramide.jpg" class="bg-white" alt="" class="mb-4" data-aos="zoom-in" />
+          <p class="font-AvenirLTStd text-base mx-4 mb-12 p-6 bg-lighterGray relative -mt-6" data-aos="fade-in">
+            Ceramide fits perfectly between the scales of fragile hair.
+            <br><br>
+            It mimics hair’s cement deep inside the cortex and reinforces their cohesion to restore softness, smoothness and strength.
+          ​</p>
+
+          <h3 class="font-PlayfairDisplay text-3xl text-grey mb-10" data-aos="fade-up">Glycerin</h3>
+          <figure class="relative refresher mb-10">
+            <div class="overflow-hidden">
+              <img src="assets/img/experience/polymers.jpg" class="w-full" alt="" data-aos="zoom-out" />
+            </div>
+            <figcaption class="flex flex-col items-center font-AvenirLTStd text-base p-4 mx-4 bg-white relative -mt-6" data-aos="fade-in">
+              From vegetal origin, glycerin helps hydrate and carry care from roots to tips for perfect definition.
+            </figcaption>
+          </figure>
+
+          <h3 class="font-PlayfairDisplay text-3xl text-grey mb-10" data-aos="fade-up">Floral Manifesto</h3>
+          <figure class="relative refresher">
+            <div class="overflow-hidden">
+              <img src="assets/img/experience/floral.jpg" class="w-full" alt="" data-aos="zoom-out" />
+            </div>
+            <figcaption class="flex flex-col items-center font-AvenirLTStd text-base p-4 mx-4 bg-white relative -mt-6 mb-10" data-aos="fade-in">
+              A warm and elegant composition born from the petal of glowing tuberoses. The fresh nots of Frangipani flowers and White Musk evoke feelings of bliss and serenity.
+              <br><br>
+              The harmonize with the sweet richness of honez creating a warm, daring fragrance with unique character
+            </figcaption>
+          </figure>
+
+          <h3 class="font-PlayfairDisplay text-3xl text-grey mb-4" data-aos="fade-up">Sulfate free &<br/>Mineral oil free</h3>
+          <img src="assets/img/wi_oilfree.jpg" class="mb-4" alt="" data-aos="zoom-in"/>
+
+        </section>
+
+        <!-- Our commitment section -->
+
+        <section class="pt-16">
+          <h3 class="font-PlayfairDisplay text-3xl text-grey mb-4" data-aos="fade-up">Our commitment</h3>
+          <figure class="relative refresher">
+            <div class="overflow-hidden">
+              <img src="assets/img/commitment.jpg" alt="" data-aos="zoom-out" />
+            </div>
+            <figcaption class="flex flex-col items-center font-AvenirLTStd text-base p-4 mx-4 bg-white relative -mt-6" data-aos="fade-in">
+              The vast majority of our products can be used safely by pregnant women, unless otherwise indicated by the gynecologist. In the event of doubt, especially for professionals (e.g. hairdressers), we recommend asking a doctor.
+              <br><br>
+              Kérastase does not test any of its products or any of its ingredients on animals.
+            </figcaption>
+          </figure>
+        </section>
+
+        <!-- Head Engineer section -->
+
+        <section class="pt-16">
+          <h3 class="font-PlayfairDisplay text-3xl text-grey mb-4" data-aos="fade-up">Edine, Head engineer for product performance</h3>
+          <h4 class="font-AvenirLTStd text-l text-grey mt-2 mb-3" data-aos="fade-up">About Curl Manifesto Range​</h4>
+          <figure class="relative refresher">
+            <div class="overflow-hidden">
+              <img src="assets/img/edine.jpg" alt="" data-aos="zoom-out" />
+            </div>
+            <figcaption class="flex flex-col items-center font-AvenirLTStd text-base p-4 mx-4 bg-white relative -mt-6 italic" data-aos="fade-in">
+              <img src="assets/img/icons/quote.svg" alt="" class="inline-block mb-4">
+              To manifest its greatness, each type of curls needs a unique and precise supply of nourishing, strenghtening and defining actives. After years of research, here comes the power of Science: Curl Manifesto is a modulable deep care platform. Combining the products will allow each type of curls to express and reveal its inner and beautiful nature.
+              <img src="assets/img/icons/quote.svg" alt="" class="inline-block my-4 transform rotate-180">
+            </figcaption>
+          </figure>
+        </section>
+        
+        <!-- Before/After section -->
+
+        <section id="beforeAfter" class="pt-16">
+          <h2 class="font-PlayfairDisplay text-5xl leading-snug text-grey underline" data-aos="fade-up">Before / After</h2>
+          <h3 class="font-PlayfairDisplay text-3xl text-grey mt-4 mb-2" data-aos="fade-up">Wavy/Curly*</h3>
+          <p class="font-AvenirLTStd text-base mb-3" data-aos="fade-up">Fine and thin to coarse and frizzy</p>
+          <div class="overflow-hidden">
+            <img-comparison-slider class="slider-beforeAfter" data-aos="zoom-out">
+              <img slot="before" src="assets/img/experience/after_curly.jpg" />
+              <img slot="after" src="assets/img/experience/before_curly.jpg" />
+              <img slot="handle" src="assets/img/icons/arrow.svg" />
+            </img-comparison-slider>
+          </div>
+          <h3 class="font-PlayfairDisplay text-3xl text-grey mt-4 mb-2" data-aos="fade-up">Very curly*</h3>
+          <p class="font-AvenirLTStd text-base mb-3" data-aos="fade-up">Loose curls to corkscrew curls</p>
+          <div class="overflow-hidden">
+            <img-comparison-slider class="slider-beforeAfter" data-aos="zoom-out">
+              <img slot="before" src="assets/img/experience/after_v_curly.jpg" />
+              <img slot="after" src="assets/img/experience/before_v_curly.jpg" />
+              <img slot="handle" src="assets/img/icons/arrow.svg" />
+            </img-comparison-slider>
+          </div>
+          <h3 class="font-PlayfairDisplay text-3xl text-grey mt-4 mb-2" data-aos="fade-up">Coily*</h3>
+          <p class="font-AvenirLTStd text-base mb-3" data-aos="fade-up">Tightly coiled to Z-angled coils</p>
+          <div class="overflow-hidden">
+            <img-comparison-slider class="slider-beforeAfter" data-aos="zoom-out">
+              <img slot="before" src="assets/img/experience/after_coily.jpg" />
+              <img slot="after" src="assets/img/experience/before_coily.jpg" />
+              <img slot="handle" src="assets/img/icons/arrow.svg" />
+            </img-comparison-slider>
+          </div>
+          <p class="font-AvenirLTStd text-sm text-center px-6 pt-4">
+            * Illustration of the comtemplated results obtained after applying Curl Manifesto range – results may vary from one individual to another.
+          </p>
+        </section>
+
+        <!-- Diagnosis section -->
+
+        <section id="diagnosis" class="pt-16">
+          <h2 class="font-PlayfairDisplay text-5xl leading-snug text-grey underline" data-aos="fade-up">Diagnosis</h2>
+          <p class="font-PlayfairDisplay text-3xl text-grey mt-2 mb-4" data-aos="fade-up">Looking for the perfect<br/>curl routine?</p>
+          <div class="overflow-hidden">
+            <img src="assets/img/diagnosis.jpg" alt="" class="mb-8" data-aos="zoom-out" />
+          </div>
+  
+          <button-primary-component
+            v-on:click.native="overlayHidden = !overlayHidden"
+            data-aos="zoom-in"
+          >
+            TAKE THE DIAGNOSIS IN 4 QUESTIONS
+          </button-primary-component>
+        </section>
+
+        <!-- Curl inSalon section -->
+
+        <section id="curlsInSalon" class="pt-16">
+          <h2 class="font-PlayfairDisplay text-5xl leading-snug text-grey underline" data-aos="fade-up">Curl in salon</h2>
+          <h3 class="font-PlayfairDisplay text-2xl text-grey mt-2 mb-4" data-aos="fade-up">Discover Vernon François​ Kérastase Curl Expert</h3>
+          <figure class="relative refresher">
+            <div class="overflow-hidden">
+              <img src="assets/img/experience/vernon_portrait.jpg" class="w-full" alt="" data-aos="zoom-out" />
+            </div>
+            <figcaption class="flex flex-col items-center font-AvenirLTStd text-base p-4 mx-4 bg-white relative -mt-6" data-aos="fade-in">
+              <h3 class="font-PlayfairDisplay text-lg text-grey mt-1 mb-4" data-aos="fade-up">We’ve partnered with Vernon François&nbsp;-&nbsp;a pioneering hairdresser and strong activist in the acceptance of natural hair.</h3>
+              <img src="assets/img/icons/quote.svg" alt="" class="inline-block mb-4">
+              <span class="italic">Today most hairstylists are not trained to all hair types, and many women are still either rejected from salons or offered hair straightening services. We want to change this through the power of education</span>
+              <img src="assets/img/icons/quote.svg" alt="" class="inline-block my-4 transform rotate-180">
+            </figcaption>
+          </figure>
+
+          <p class="font-PlayfairDisplay text-xl text-grey mt-2 mb-4" data-aos="fade-up">
+            Watch the video of Vernon’s interview
+          </p>
+          <!-- <video
+            controls
+            preload="auto"
+            poster="assets/img/thumbVideo2.png"
+            width="100%"
+            data-aos="fade-in"
+          >
+            <source src="https://cdowsflotsdev.blob.core.windows.net/kerastase-demo-augmentedproduct/%5b2013%5dKS-CurlManifesto-04_Interview-210119.mp4"
+                    type="video/mp4">
+            Sorry, your browser doesn't support embedded videos.
+          </video> -->
+
+          <iframe height="250" data-aos="fade-in" class="w-full" src="https://www.youtube.com/embed/oi_LOSiDsTU?controls=0?modestbranding=1?rel=0?showinfo=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+          <p class="font-PlayfairDisplay text-lg text-grey mt-12 mb-1" data-aos="fade-up">New curl in-salon service</p>
+          <p class="font-PlayfairDisplay text-3xl text-grey mb-4" data-aos="fade-up">Discover our FUSIO-DOSE Concentré de Forme</p>
+          <img src="assets/img/experience/fusio.jpg" alt="" class="inline-block mb-3 w-full">
+          <a
+            href="https://hair-salons.kerastase.com/"
+            class="inline-block mt-4 px-6 py-3 bg-gray font-DinCondensed text-white cursor-pointer"
+            data-aos="zoom-in"
+          >
+            <span>FIND YOUR NEAREST SALON</span>
+          </a>
+
+
+          <div class="mt-12 mb-20">
+            <p class="font-PlayfairDisplay text-xl text-grey mb-4" data-aos="fade-up">
+              Watch the manifest your greatness campaign
+            </p>
+            <!-- <video
+              controls
+              preload="auto"
+              poster="assets/img/thumbVideo1.png"
+              width="100%"
+              data-aos="fade-in"
+            >
+            <source
+              src="https://cdowsflotsdev.blob.core.windows.net/kerastase-demo-augmentedproduct/KERASTASE_CURL_MANIFESTO_30s_16x9_VA_210106.mp4"
+              type="video/mp4"
+            />
+              Sorry, your browser doesn't support embedded videos.
+            </video> -->
+            <iframe height="250" data-aos="fade-in" class="w-full" src="https://www.youtube.com/embed/8C_tEANijMs?controls=0?modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          
+        </section>
+
+        <!-- How it's made section -->
+
+        <section id="howItsMade" class="pt-16">
+          <h2 class="font-PlayfairDisplay text-5xl leading-snug text-grey underline" data-aos="fade-up">How it's made</h2>
+          <img src="assets/img/icons/packaging.png" height="50" alt="" class="block mx-auto mb-2 mt-6" data-aos="fade-zoom-in">
+          <p class="font-PlayfairDisplay text-3xl text-grey mb-4" data-aos="fade-up">Packaging</p>
+          <div class="overflow-hidden">
+            <img src="assets/img/howItsMade.jpg" alt="" data-aos="zoom-out" />
+          </div>
+          <p class="font-AvenirLTStd text-base p-4 mb-2 mx-4 bg-white relative z-10 -mt-12" data-aos="fade-up">All our packaging is managed in a responsible manner, respectful of biodiversity and sourced from sustainability managed forests.</p>
+          
+          <img src="assets/img/logoFSC.jpg" alt="" class="block mx-auto mb-12" data-aos="fade-zoom-in">
+          <p class="font-PlayfairDisplay text-3xl text-grey mb-3 mx-10" data-aos="fade-up">At Kérastase we care beyond hair</p>
+          <p class="font-PlayfairDisplay text-xl text-grey mb-12 mx-8" data-aos="fade-up">Most of our Kérastase products are made with recyclable plastic</p>
+          
+          <img src="assets/img/icons/factory.png" height="50" alt="" class="block mx-auto mb-2 mt-6" data-aos="fade-zoom-in">
+          <p class="font-PlayfairDisplay text-3xl text-grey mb-4" data-aos="fade-up">Factory</p>
+          <h3 class="font-PlayfairDisplay text-xl text-grey mb-4 px-8" data-aos="fade-up">In 2020 the factory saved the equivalent of 700 people’s annual water consumption.​</h3>
+          <div class="overflow-hidden">
+            <img src="assets/img/factory.jpg" alt="" class="w-full" data-aos="zoom-out" />
+          </div>
+          <p class="font-AvenirLTStd text-base p-4 mb-4 mx-4 bg-white relative z-10 -mt-12" data-aos="fade-in">
+            The Kérastase production plant has been Carbon neutral since 2015 and in 2017 became the first dry plant of the L'Oréal Group.
+          </p>
+          <div class="overflow-hidden">
+            <img src="assets/img/lab.jpg" alt="" class="w-full" data-aos="zoom-out" />
+          </div>
+          <div class="font-AvenirLTStd text-base p-4 mb-4 mx-4 bg-white relative z-10 -mt-12" data-aos="fade-in">
+            <p class="font-PlayfairDisplay mb-1">100% of the water</p>
+            <p class="text-sm">used today for industrial processes is purified and recycled in a loop in the factory</p>
+          </div>
+        </section>
+
+        <!-- Newsletter section -->
+        
+        <section class="pt-16">
+          <h2 class="font-PlayfairDisplay text-5xl leading-snug text-grey underline" data-aos="fade-up">Newsletter</h2>
+          <h3 class="font-PlayfairDisplay text-xl text-grey mt-2 mb-3" data-aos="fade-up">Sign me up for Kérastase news, styling tips and exclusive offers.​</h3>
+          <img src="assets/img/fake_input.png" alt="" data-aos="fade-up" />
+        </section>
+
+        <section id="theRange" class="py-20">
+            <h2 class="font-PlayfairDisplay text-5xl leading-snug text-grey underline" data-aos="fade-up">The range</h2>
+            <p class="font-PlayfairDisplay text-3xl text-grey mt-2 mb-4" data-aos="fade-up">Find out more about our products</p>
+            <div
+             class="swiper-bottom-container relative overflow-hidden">
+              <div class="swiper-wrapper mb-10">
+                <div class="swiper-slide flex flex-col">
+                  <img src="assets/img/carousel/bottom/1.jpg" class="h-60 p-4" alt="">
+                  <p class="font-PlayfairDisplay text-xl uppercase px-8">Bain hydratation douceur</p>
+                  <a href="#" class="font-DinCondensed font-bold outline-none uppercase text-black underline my-6">
+                    learn more about this product
+                  </a>
+                </div>
+                <div class="swiper-slide flex flex-col">
+                  <img src="assets/img/carousel/bottom/1-2.jpg" class="h-60 p-4" alt="">
+                  <p class="font-PlayfairDisplay text-xl uppercase px-8">Masque Beurre haute nutrition</p>
+                  <a href="#" class="font-DinCondensed font-bold outline-none uppercase text-black underline my-6">
+                    learn more about this product
+                  </a>
+                </div>
+                <div class="swiper-slide flex flex-col">
+                  <img src="assets/img/carousel/bottom/2.jpg" class="h-60 p-4" alt="">
+                  <p class="font-PlayfairDisplay text-xl uppercase px-8">Fondant hydratation essentielle</p>
+                  <a href="#" class="font-DinCondensed font-bold outline-none uppercase text-black underline my-6">
+                    learn more about this product
+                  </a>
+                </div>
+                <div class="swiper-slide flex flex-col">
+                  <img src="assets/img/carousel/bottom/3.jpg" class="h-60 p-4" alt="">
+                  <p class="font-PlayfairDisplay text-xl uppercase px-8">crème de jour fondamentale</p>
+                  <a href="#" class="font-DinCondensed font-bold outline-none uppercase text-black underline my-6">
+                    learn more about this product
+                  </a>
+                </div>
+                <div class="swiper-slide flex flex-col">
+                  <img src="assets/img/carousel/bottom/4.jpg" class="h-60 p-4" alt="">
+                  <p class="font-PlayfairDisplay text-xl uppercase px-8">Gelée Curl Contour</p>
+                  <a href="#" class="font-DinCondensed font-bold outline-none uppercase text-black underline my-6">
+                    learn more about this product
+                  </a>
+                </div>
+                <div class="swiper-slide flex flex-col">
+                  <img src="assets/img/carousel/bottom/5.jpg" class="h-60 p-4" alt="">
+                  <p class="font-PlayfairDisplay text-xl uppercase px-8">huile sublime repair</p>
+                  <a href="#" class="font-DinCondensed font-bold outline-none uppercase text-black underline my-6">
+                    learn more about this product
+                  </a>
+                </div>
+                <div class="swiper-slide flex flex-col">
+                  <img src="assets/img/carousel/bottom/6.jpg" class="h-60 p-4" alt="">
+                  <p class="font-PlayfairDisplay text-xl uppercase px-8">Refresh absolu</p>
+                  <a href="#" class="font-DinCondensed font-bold outline-none uppercase text-black underline my-6">
+                    learn more about this product
+                  </a>
+                </div>
+              </div>
+              <div class="swiper-pagination"></div>
+              <div class="swiper-button-next"></div>
+              <div class="swiper-button-prev"></div>
+            </div>
+        </section>
+      </div>
+    </div>
+    
+    <!-- import VueJS -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+    <!-- import AOS animation library -->
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+    <!-- import Scrollactive (scroll navigation into page) library -->
+    <script src="https://cdn.jsdelivr.net/npm/vue-scrollactive@0.9.3/dist/vue-scrollactive.min.js"></script>
+
+    <!-- import Swiper library (carousel, diagnosis, routines) -->
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+    <script src="js/diagnostic.js"></script>
+
+    <script>
+      // AOS animation library initialization
+      AOS.init({
+        duration: 600,
+      });
+
+      // Series of carousel initialization for products section
+      let swiperProductsOne = new Swiper('.swiper-product-one-container', {
+        pagination: {
+          el: '.swiper-pagination',
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        spaceBetween: 20,
+      });
+
+      let swiperProductsTwo = new Swiper('.swiper-product-two-container', {
+        pagination: {
+          el: '.swiper-pagination',
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+      });
+
+      // Bottom carousel initialization
+      let swiperBottom = new Swiper('.swiper-bottom-container', {
+        pagination: {
+          el: '.swiper-pagination',
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,31 @@
+version: "3.7"
+services:
+
+  front:
+    image: docker.wdg.cloud/loreal/kerastase:latest
+    build: ./
+    init: true
+    restart: unless-stopped
+    networks:
+      - proxy
+    volumes:
+      - ./cfg/nginx.conf:/etc/nginx/nginx.conf:ro
+
+  haproxy:
+    image: haproxy:alpine
+    container_name: haproxy
+    networks:
+      - proxy
+    ports:
+      - 80:80
+      - 443:443
+    restart: unless-stopped
+    volumes:
+      - ./cfg/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+      - /etc/ssl/wizards.rocks.pem:/run/secrets/haproxycert:ro
+      - /etc/ssl/kerastase.com/cert.pem:/run/secrets/haproxycert_kerastase:ro
+      - /etc/ssl/kerastase.com/cert.pem.key:/run/secrets/haproxycert_kerastase.key:ro
+    command: [ "haproxy", "-f", "/usr/local/etc/haproxy/haproxy.cfg" ]
+
+networks:
+  proxy:

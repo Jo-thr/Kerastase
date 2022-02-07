@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- font-face CSS -->
+    <link href="styles/fonts.css" rel="stylesheet" />
+
+    <!-- tailwind generated CSS -->
+    <link href="styles/tailwind.css" rel="stylesheet" />
+
+    <!-- custom css -->
+    <link href="styles/main.css" rel="stylesheet" />
+    
+  </head>
+  <body class="bg-lighterGray">
+    <div id="app">
+      <div class="main-container relative funnel h-screen m-auto bg-lightGray">
+        <header-component></header-component>
+        <div class="funnel-container absolute w-full">
+          <h1 class="mb-8 font-PlayfairDisplay text-4xl text-center underline">
+            Are you
+          </h1>
+          <button-primary-component class="mb-2" href="consumer.html"
+            >A CURLY HAIRED PERSON</button-primary-component
+          >
+          <button-secondary-component href="professional.html"
+            >A PROFESSIONAL</button-secondary-component
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- import VueJS -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+    <!-- VueJS init -->
+    <script src="js/main.js"></script>
+
+  </body>
+</html>

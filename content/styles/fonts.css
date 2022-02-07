@@ -1,0 +1,17 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap");
+
+@font-face {
+  font-family: "DinCondensed";
+  src: url("../assets/fonts/D-DINCondensed-Bold.woff2") format("woff2"),
+    url("../assets/fonts/D-DINCondensed-Bold.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "AvenirLTStd";
+  src: url("../assets/fonts/AvenirLTStd-Light.woff2") format("woff2"),
+    url("../assets/fonts/AvenirLTStd-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+}
